@@ -6,6 +6,7 @@ const usersRouter = express.Router();
 
 usersRouter.post('/register', usersController.register);
 usersRouter.post('/login', usersController.login);
+usersRouter.post('/logout', usersController.logout);
 
 usersRouter.get(
     '/admin/profile',

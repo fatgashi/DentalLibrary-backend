@@ -37,7 +37,6 @@ module.exports = function(passport) {
   const jwtOptions = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: process.env.JWT_SECRET,
-    expiresIn: '1m',
   };
 
   passport.use(

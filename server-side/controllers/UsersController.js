@@ -50,11 +50,24 @@ const usersController = {
             }
         
             // Generate JWT token
-            const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
+            const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {expiresIn: '1h'});
         
             res.json({ token });
           })(req, res, next);
     },
+    logout: async (req, res) => {
+      req.logout(function (err) {
+        if (err) {
+          console.error('Error while logging out:', err);
+          return res.status(500).json({ message: 'Error during logout' });
+        }
+    
+        // Optional: Perform any additional actions after logout, such as clearing session data or redirecting to a different page
+        req.user.token = null;
+        res.json({ message: 'Logout successful' });
+      });
+    },
+    
     getProfile: (req,res) => {
         res.json(req.user);
     }
