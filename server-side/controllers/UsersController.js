@@ -63,7 +63,6 @@ const usersController = {
         }
     
         // Optional: Perform any additional actions after logout, such as clearing session data or redirecting to a different page
-        req.user.token = null;
         res.json({ message: 'Logout successful' });
       });
     },

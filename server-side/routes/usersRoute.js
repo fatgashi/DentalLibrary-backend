@@ -8,17 +8,6 @@ usersRouter.post('/register', usersController.register);
 usersRouter.post('/login', usersController.login);
 usersRouter.post('/logout', usersController.logout);
 
-usersRouter.get(
-    '/admin/profile',
-    passport.authenticate('jwt', { session: false }),
-    (req, res) => {
-      if (req.user.role !== 'admin') {
-        return res.status(403).json({ message: 'Access denied' });
-      }
-      usersController.getProfile(req, res);
-    }
-  );
-
   usersRouter.get(
     '/client/profile',
     passport.authenticate('jwt', { session: false }),
