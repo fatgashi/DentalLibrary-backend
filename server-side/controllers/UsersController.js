@@ -34,7 +34,6 @@ const usersController = {
             res.status(201).json({ message: 'User registered successfully' });
         } 
         catch (err) {
-            console.error(err);
             res.status(500).json({ message: 'Internal server error' });
         }
     },
@@ -65,6 +64,38 @@ const usersController = {
         // Optional: Perform any additional actions after logout, such as clearing session data or redirecting to a different page
         res.json({ message: 'Logout successful' });
       });
+    },
+
+    hasTokenExpired: (req,res) => {
+      try {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+          return res.status(401).json({ message: 'Missing or invalid token' });
+        }
+    
+        const token = authHeader.replace('Bearer ', '');
+    
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+
+        const now = Date.now();
+    
+        const expired = decodedToken.exp * 1000 < now;
+
+        res.json({ expired });
+        
+      } catch (error) {
+        if (error instanceof jwt.TokenExpiredError) {
+          // Token has expired
+          res.json({ expired: true });
+        } else if (error instanceof jwt.JsonWebTokenError) {
+          // Token is invalid
+          res.json({ expired: true });
+        } else {
+          // Other errors
+          console.error(error);
+          res.status(500).json({ message: 'Internal server error' });
+        }
+      }
     },
     
     getProfile: (req,res) => {
