@@ -7,6 +7,7 @@ const passport = require('passport');
 const usersRouter = require('./routes/usersRoute');
 const booksRouter = require('./routes/booksRoute');
 const session = require('express-session');
+const cartRouter = require("./routes/cartRoute");
 
 app.use(
   session({
@@ -22,6 +23,7 @@ app.use(passport.initialize());
 require('./config/passport')(passport);
 app.use("/users", usersRouter);
 app.use("/books", booksRouter);
+app.use("/cart", cartRouter);
 app.use(passport.session());
 
 const port = process.env.PORT;
