@@ -28,7 +28,7 @@ const CartController = {
             user.cart.push(bookId);
             await user.save();
         
-            res.json({ message: 'Book added to cart' });
+            res.json({ message: 'Book added to cart!' });
           } catch (error) {
             res.status(500).json({ message: 'Internal server error' });
           }
@@ -50,8 +50,32 @@ const CartController = {
         
             res.json({ cartBooks });
           } catch (error) {
-            res.status(500).json({ message: 'Internal server error' });
+            res.status(500).json({ message: 'Internal server error!' });
           }
+    },
+
+    checkIfBookIsAddedToCart: async (req, res) => {
+      try {
+        const userId = req.params.userId;
+        const bookId = req.params.bookId;
+  
+        const user = await User.findById(userId);
+  
+        if(!user) {
+          return res.status(404).json({ message: 'User not found! '});
+        }
+  
+        if(user.cart.includes(bookId)){
+          return res.json({cart: true});
+        }
+  
+        res.json({cart: false});
+
+      } catch(error) {
+        res.status(500).json({message: 'Internal server error!'});
+      }
+
+      
     },
 
     deleteBookFromCart: async (req,res) => {
