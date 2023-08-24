@@ -48,7 +48,7 @@ const CartController = {
             // Retrieve the books from the user's cart
             const cartBooks = user.cart;
         
-            res.json({ cartBooks });
+            res.json(cartBooks);
           } catch (error) {
             res.status(500).json({ message: 'Internal server error!' });
           }

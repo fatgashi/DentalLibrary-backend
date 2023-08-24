@@ -1,6 +1,6 @@
+require('dotenv').config();
 const express = require("express");
 const cors = require("cors");
-require('dotenv').config();
 const app = express();
 const mongoose = require('mongoose');
 const passport = require('passport');
@@ -8,6 +8,7 @@ const usersRouter = require('./routes/usersRoute');
 const booksRouter = require('./routes/booksRoute');
 const session = require('express-session');
 const cartRouter = require("./routes/cartRoute");
+const paymentRouter = require('./routes/paymentRoute');
 
 app.use(
   session({
@@ -24,6 +25,7 @@ require('./config/passport')(passport);
 app.use("/users", usersRouter);
 app.use("/books", booksRouter);
 app.use("/cart", cartRouter);
+app.use("/payment", paymentRouter);
 app.use(passport.session());
 
 const port = process.env.PORT;
