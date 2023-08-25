@@ -27,6 +27,7 @@ app.use("/books", booksRouter);
 app.use("/cart", cartRouter);
 app.use("/payment", paymentRouter);
 app.use(passport.session());
+app.use('/uploads', express.static('uploads'));
 
 const port = process.env.PORT;
 

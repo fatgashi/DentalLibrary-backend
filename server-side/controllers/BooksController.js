@@ -1,4 +1,6 @@
 const Book = require("../models/booksModel");
+const fs = require('fs');
+const path = require('path');
 
 const BooksController = {
     addBook: async (req,res) => {
@@ -12,6 +14,10 @@ const BooksController = {
                 author,
                 photoUrl
             });
+
+            if(req.file){
+                newBook.pdfFiles = req.file.path
+            }
 
             await newBook.save();
 
@@ -64,11 +70,28 @@ const BooksController = {
     deleteBook: async (req,res) => {
         const { id } = req.params;
         try {
-            const removed = await Book.findByIdAndDelete(id);
-            if(!removed) throw new Error('Book was not found !');
+            const book = await Book.findById(id);
+
+            if (!book) {
+            return res.status(404).json({ message: 'Book not found' });
+            }
+            
+            if(book.pdfFiles != undefined || book.pdfFiles != null){
+                const filePath = path.resolve(__dirname, '..', '..', book.pdfFiles);
+                const fileExists = fs.existsSync(filePath);
+                if(fileExists){
+                    fs.unlinkSync(filePath); // Delete the file
+                }
+            }
+
+
+            
+
+            // Delete the book from the database
+            await Book.findByIdAndDelete(id);
             res.status(200).json({
                 message: 'Book deleted successfully',
-                book: removed
+                book: book
             });
 
         } catch (error) {

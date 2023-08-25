@@ -8,7 +8,10 @@ const BookSchema = new Schema({
   price: { type: Number, required: true },
   author: { type: String, required: true },
   photoUrl: { type: String },
-  date: { type: Date, default: Date.now }
+  date: { type: Date, default: Date.now },
+  pdfFiles: {
+    type: String
+  }
 });
 
 const Book = mongoose.model('Book', BookSchema);
