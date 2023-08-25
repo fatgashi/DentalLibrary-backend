@@ -31,10 +31,19 @@ const usersController = {
             // Save the user to the database
             await newUser.save();
         
-            res.status(201).json({ message: 'User registered successfully' });
+            res.status(201).json({ message: 'You have registered successfully!' });
         } 
         catch (err) {
+          if (err.errors) {
+            const errorMessages = {};
+
+            for (const field in err.errors) {
+              errorMessages[field] = err.errors[field].message;
+            }
+            res.status(400).json(errorMessages);
+          } else {
             res.status(500).json({ message: 'Internal server error' });
+          }
         }
     },
     login: async(req,res,next) => {

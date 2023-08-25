@@ -9,18 +9,18 @@ var validateEmail = function(email) {
 const Users = new Schema ({
     name: {
         type: String,
-        minlength: 2,
+        minlength: [2, '(`{PATH}`) `{VALUE}` is shorter than the minimum allowed length (2).'],
         required: true,
     },
     surname: {
         type: String,
-        minlength: 3,
+        minlength: [3, '(`{PATH}`) `{VALUE}` is shorter than the minimum allowed length (3).'],
         required: true,
     },
     username: {
         type: String,
         required: true,
-        minlength: 4,
+        minlength: [4, '(`{PATH}`) `{VALUE}` is shorter than the minimum allowed length (4).'],
         unique: true
     },
     password: {
