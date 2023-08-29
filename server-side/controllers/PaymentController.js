@@ -29,6 +29,7 @@ const PaymentController = {
               }));
 
             const session = await stripe.checkout.sessions.create({
+                client_reference_id: userId,
                 payment_method_types: ['card'],
                 line_items: lineItems,
                 mode: 'payment',
@@ -40,6 +41,36 @@ const PaymentController = {
         } catch (error) {
             res.status(500).json({error: error.message});
         }
+    },
+
+    webhook: async (req,res) => {
+      const sig = req.headers['stripe-signature'];
+      const endpointSecret = process.env.ENDPOINT_SECRET;
+
+      let event;
+
+      try {
+        event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+      } catch (err) {
+        return res.status(400).send(`Webhook Error: ${err.message}`);
+      }
+
+      if (event.type === 'checkout.session.completed') {
+        const session = event.data.object;
+        const userId = session.client_reference_id;
+
+        const user = await User.findById(userId);
+
+        const purchasedBooksIds = user.cart.map(book => book._id);
+
+        user.purchasedBooks.push(...purchasedBooksIds);
+
+        user.cart = [];
+
+        await user.save();
+        
+        return res.status(200).json({ received: true });
+      }
     }
 }
 

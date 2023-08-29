@@ -38,6 +38,7 @@ const Users = new Schema ({
         enum: ['client', 'admin'], 
         default: 'client' 
     },
+    purchasedBooks: [{ type: Schema.Types.ObjectId, ref: 'Book'}],
     cart: [{ type: Schema.Types.ObjectId, ref: 'Book' }],
     date: {
         type: Date,
