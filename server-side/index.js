@@ -9,6 +9,13 @@ const booksRouter = require('./routes/booksRoute');
 const session = require('express-session');
 const cartRouter = require("./routes/cartRoute");
 const paymentRouter = require('./routes/paymentRoute');
+const conditionalJson = require('./middlewares/conditionJson');
+
+
+
+
+app.use(conditionalJson);
+app.use(cors());
 
 app.use(
   session({
@@ -18,15 +25,14 @@ app.use(
   })
 );
 
-app.use(express.json());
-app.use(cors());
+
 app.use(passport.initialize());
 require('./config/passport')(passport);
+app.use(passport.session());
 app.use("/users", usersRouter);
 app.use("/books", booksRouter);
 app.use("/cart", cartRouter);
 app.use("/payment", paymentRouter);
-app.use(passport.session());
 app.use('/uploads', express.static('uploads'));
 
 const port = process.env.PORT;

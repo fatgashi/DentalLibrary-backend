@@ -16,6 +16,10 @@ const CartController = {
             if (user.cart.includes(bookId)) {
                 return res.status(400).json({ message: 'Book already has added to cart! ' });
             }
+
+            if(user.purchasedBooks.includes(bookId)) {
+              return res.status(400).json({message: 'Book already purchased !'});
+            }
         
             // Find the book by _id
             const book = await Book.findById(bookId);

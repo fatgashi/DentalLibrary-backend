@@ -29,7 +29,7 @@ const PaymentController = {
               }));
 
             const session = await stripe.checkout.sessions.create({
-                client_reference_id: userId,
+                client_reference_id: user.id, 
                 payment_method_types: ['card'],
                 line_items: lineItems,
                 mode: 'payment',
@@ -70,6 +70,8 @@ const PaymentController = {
         await user.save();
         
         return res.status(200).json({ received: true });
+      } else {
+        return res.status(200).json({received: true});
       }
     }
 }
