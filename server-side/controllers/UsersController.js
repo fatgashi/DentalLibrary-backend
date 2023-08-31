@@ -100,10 +100,23 @@ const usersController = {
           // Token is invalid
           res.json({ expired: true });
         } else {
-          // Other errors
-          console.error(error);
           res.status(500).json({ message: 'Internal server error' });
         }
+      }
+    },
+
+    getPurchasedBooks: async (req, res) => {
+      try {
+          const user = req.user;
+
+          await user.populate('purchasedBooks');
+
+          const purchasedBooks = user.purchasedBooks.reverse();
+        
+          res.json(purchasedBooks);
+          
+      } catch (err) {
+        res.status(500).json({ message: 'Internal server error' });
       }
     },
     

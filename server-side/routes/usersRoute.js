@@ -8,6 +8,7 @@ usersRouter.post('/register', usersController.register);
 usersRouter.post('/login', usersController.login);
 usersRouter.post('/logout', usersController.logout);
 usersRouter.get('/hasTokenExpired', usersController.hasTokenExpired);
+usersRouter.get('/getPurchasedBooks', passport.authenticate('jwt', { session: false }), usersController.getPurchasedBooks);
 
   usersRouter.get(
     '/client/profile',
