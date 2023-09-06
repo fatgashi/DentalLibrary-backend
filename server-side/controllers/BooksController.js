@@ -83,6 +83,34 @@ const BooksController = {
         }
     },
 
+    searchBook: async (req,res) => {
+        try {
+            const searchQuery = req.query.title;
+        
+            // Use MongoDB's text search to find exact and partial title matches
+            const books = await Book.find(
+              { $text: { $search: searchQuery } },
+              { score: { $meta: 'textScore' } }
+            )
+              .sort({ score: { $meta: 'textScore' } })
+              .limit(10);
+        
+            // Additional logic for nearby matches
+            if (books.length === 0) {
+              const nearbyBooks = await Book.find({
+                title: { $regex: new RegExp(searchQuery, 'i') },
+              }).limit(10);
+        
+              return res.json({ books: nearbyBooks });
+            }
+        
+            res.json({ books });
+          } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+          }
+    },
+
     deleteBook: async (req,res) => {
         const { id } = req.params;
         try {

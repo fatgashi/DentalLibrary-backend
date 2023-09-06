@@ -8,6 +8,7 @@ booksRouter.get('/getAllBooks', BooksController.getAllBooks);
 booksRouter.get('/getBook/:id', BooksController.getBook);
 booksRouter.post('/addBook', isAdmin, upload.single('pdfFiles'), BooksController.addBook);
 booksRouter.post('/updateBook/:id', isAdmin, BooksController.updateBook);
+booksRouter.get('/searchBook', BooksController.searchBook);
 booksRouter.delete('/deleteBook/:id', isAdmin, BooksController.deleteBook);
 
 
