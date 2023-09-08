@@ -10,9 +10,14 @@ const session = require('express-session');
 const cartRouter = require("./routes/cartRoute");
 const paymentRouter = require('./routes/paymentRoute');
 const conditionalJson = require('./middlewares/conditionJson');
+const socketIO = require('./socket');
 
-
-
+const httpServer = require('http').createServer(app);
+const io = require('socket.io')(httpServer, {
+  cors: {
+    origin: "*",
+  }
+});
 
 app.use(conditionalJson);
 app.use(cors());
@@ -34,6 +39,7 @@ app.use("/books", booksRouter);
 app.use("/cart", cartRouter);
 app.use("/payment", paymentRouter);
 app.use('/uploads', express.static('uploads'));
+socketIO(io);
 
 const port = process.env.PORT;
 
@@ -43,4 +49,4 @@ mongoose.connect(`${process.env.MONGO_URL}`, {
 
 }).then(() => console.log("MongoDb database Connected ...")).catch((err) => console.log(err));
 
-app.listen(port, () => console.log(`Up & Running on port ${port}`));
+httpServer.listen(port, () => console.log(`Up & Running on port ${port}`));
