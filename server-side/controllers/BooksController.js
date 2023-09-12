@@ -41,6 +41,19 @@ const BooksController = {
         }
     },
 
+    getLatestBooks: async (req,res) => {
+        try {
+            const lastBooks = await Book.find({})
+              .sort({ date: -1 }) // Sort by the 'date' field in descending order (most recent first)
+              .limit(12); // Limit the result to 12 books
+        
+            res.json(lastBooks);
+          } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+          }
+    },
+
     updateBook: async(req,res) => {
         
         try {

@@ -6,9 +6,10 @@ const upload = require('../middlewares/upload');
 
 booksRouter.get('/getAllBooks', BooksController.getAllBooks);
 booksRouter.get('/getBook/:id', BooksController.getBook);
-booksRouter.post('/addBook', isAdmin, upload.single('pdfFiles'), BooksController.addBook);
+booksRouter.post('/addBook', upload.single('pdfFiles'), isAdmin, BooksController.addBook);
 booksRouter.post('/updateBook/:id', isAdmin, BooksController.updateBook);
 booksRouter.get('/searchBook', BooksController.searchBook);
+booksRouter.get('/getLatestBooks', BooksController.getLatestBooks);
 booksRouter.delete('/deleteBook/:id', isAdmin, BooksController.deleteBook);
 
 
