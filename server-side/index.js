@@ -38,7 +38,8 @@ app.use("/users", usersRouter);
 app.use("/books", booksRouter);
 app.use("/cart", cartRouter);
 app.use("/payment", paymentRouter);
-app.use('/uploads', express.static('uploads'));
+
+
 socketIO(io);
 
 const port = process.env.PORT;

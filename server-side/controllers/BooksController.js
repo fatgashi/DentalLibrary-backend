@@ -124,6 +124,28 @@ const BooksController = {
           }
     },
 
+    uploadBook: async(req,res) => {
+        const bookId = req.params.bookId;
+        try{
+            const book = await Book.findById(bookId);
+      
+            if (!book) {
+            return res.status(404).json({ message: 'Book not found' });
+            }
+        
+            const fileName = book.pdfFiles.split('\\').pop();
+            // Assuming the book has a field called 'pdfFile' containing the file name
+            const filePath = path.join(__dirname, '..', '..', 'uploads', fileName);
+        
+            // Use res.sendFile() to send the file
+            res.sendFile(filePath);
+
+        } catch (err) {
+            res.status(500).json({message: "Internal server error!"});
+        }
+  
+    },
+
     deleteBook: async (req,res) => {
         const { id } = req.params;
         try {
@@ -140,9 +162,6 @@ const BooksController = {
                     fs.unlinkSync(filePath); // Delete the file
                 }
             }
-
-
-            
 
             // Delete the book from the database
             await Book.findByIdAndDelete(id);
