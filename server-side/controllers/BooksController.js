@@ -30,14 +30,11 @@ const BooksController = {
 
     getAllBooks: async (req,res) => {
         try {
-            const bookList = await Book.find();
+            const bookList = await Book.find({}).sort({ date: -1});
             if(!bookList) throw new Error("No Book list was found!");
-            const sorted = bookList.sort((a,b) => {
-                return new Date(a.date).getTime() - new Date(b.date).getTime();
-            });
-            res.json(sorted);
+            res.json(bookList);
         } catch (error) {
-            res.status(500).json({message: error.message});
+            res.status(500).json({message: 'Internal server error!'});
         }
     },
 
@@ -50,7 +47,7 @@ const BooksController = {
             res.json(lastBooks);
           } catch (error) {
             console.error(error);
-            res.status(500).json({ message: 'Internal server error' });
+            res.status(500).json({ message: 'Internal server error!' });
           }
     },
 

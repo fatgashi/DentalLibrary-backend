@@ -1,4 +1,13 @@
 const Message = require('./models/messageModel');
+const User = require('./models/usersModel');
+
+// function formatDate(date) {
+//   if (date instanceof Date) {
+//     // Use the built-in Date methods to format the timestamp
+//     return date.toLocaleTimeString(); // You can customize the format as needed
+//   }
+//   return date; // Return the original value if it's not a Date object
+// }
 
 const socketIO = (io) => {
     io.on('connection', (socket) => {
@@ -18,6 +27,75 @@ const socketIO = (io) => {
             socket.emit('pastMessages', pastMessages);
           } catch (error) {
             console.error('Error retrieving past messages:', error);
+          }
+        });
+
+        socket.on('getAdminConversations', async () => {
+          try {
+            const adminUserId = '64b93f1a2c51344e99712479'; // Replace 'admin' with the actual admin user's ObjectId
+      
+            // Query the database to find unique users who have communicated with the admin
+            const users = await Message.distinct('senderId', {
+              receiverId: adminUserId,
+            });
+      
+            // Find the index of the admin user's ID in the list
+            const filteredUsers = users.filter((userId) => !userId.equals(adminUserId));
+
+            const userObjects = await User.find({ _id: { $in: filteredUsers } });
+
+            const conversations = [];
+
+      // Retrieve the last message for each user
+            for (const user of userObjects) {
+              const lastMessage = await Message.findOne({
+                $or: [
+                  { senderId: adminUserId, receiverId: user._id },
+                  { senderId: user._id, receiverId: adminUserId },
+                ],
+              })
+                .sort({ timestamp: -1 }) // Sort by timestamp in descending order to get the last message
+                .limit(1);
+
+              if (lastMessage) {
+                conversations.push({
+                  userId: user._id,
+                  name: user.name,
+                  surname: user.surname,
+                  lastMessage: lastMessage.content,
+                  lastMessageTimestamp: lastMessage.timestamp,
+                });
+              }
+            }
+      
+            // Emit the list of user IDs excluding the admin back to the client
+            socket.emit('adminConversations', conversations);
+          } catch (error) {
+            console.error('Error retrieving users who wrote to admin:', error);
+            // Handle errors and possibly emit an error event to the client
+          }
+        });
+
+        socket.on('getAdminUserMessages', async (selectedUserId) => {
+          try {
+            // Query the database to retrieve messages exchanged between admin and the selected user
+            const adminUserId = '64b93f1a2c51344e99712479'; // Assuming you have an admin user or you can retrieve the admin's ID
+            const pastMessages = await Message.find({
+              $or: [
+                { senderId: adminUserId, receiverId: selectedUserId },
+                { senderId: selectedUserId, receiverId: adminUserId },
+              ],
+            }).sort({ timestamp: 1 });
+
+            // const formattedMessages = pastMessages.map((message) => ({
+            //   ...message._doc, // Use _doc to access the raw document data
+            //   timestamp: formatDate(message.timestamp), // Call a formatting function
+            // }));
+        
+            // Emit the messages back to the admin client
+            socket.emit('adminUserMessages', pastMessages);
+          } catch (error) {
+            console.error('Error retrieving admin user messages:', error);
           }
         });
     
