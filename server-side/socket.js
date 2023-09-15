@@ -1,18 +1,9 @@
 const Message = require('./models/messageModel');
 const User = require('./models/usersModel');
 
-// function formatDate(date) {
-//   if (date instanceof Date) {
-//     // Use the built-in Date methods to format the timestamp
-//     return date.toLocaleTimeString(); // You can customize the format as needed
-//   }
-//   return date; // Return the original value if it's not a Date object
-// }
-
 const socketIO = (io) => {
     io.on('connection', (socket) => {
-        // When a user connects, you can perform actions here.
-        console.log("A user Connected");
+      
         socket.on('getPastMessages', async (userId) => {
           try {
             // Query the database to retrieve past messages
@@ -57,6 +48,12 @@ const socketIO = (io) => {
                 .sort({ timestamp: -1 }) // Sort by timestamp in descending order to get the last message
                 .limit(1);
 
+                const unreadMessages = await Message.countDocuments({
+                  senderId: user._id,
+                  receiverId: adminUserId,
+                  read: false,
+                });
+
               if (lastMessage) {
                 conversations.push({
                   userId: user._id,
@@ -64,9 +61,13 @@ const socketIO = (io) => {
                   surname: user.surname,
                   lastMessage: lastMessage.content,
                   lastMessageTimestamp: lastMessage.timestamp,
+                  unreadMessages: unreadMessages,
                 });
               }
             }
+
+            conversations.sort((a, b) => b.lastMessageTimestamp - a.lastMessageTimestamp);
+
       
             // Emit the list of user IDs excluding the admin back to the client
             socket.emit('adminConversations', conversations);
@@ -87,10 +88,12 @@ const socketIO = (io) => {
               ],
             }).sort({ timestamp: 1 });
 
-            // const formattedMessages = pastMessages.map((message) => ({
-            //   ...message._doc, // Use _doc to access the raw document data
-            //   timestamp: formatDate(message.timestamp), // Call a formatting function
-            // }));
+            for (const message of pastMessages) {
+              if (message.receiverId.equals(adminUserId) && !message.read) {
+                message.read = true;
+                await message.save(); 
+              }
+            }
         
             // Emit the messages back to the admin client
             socket.emit('adminUserMessages', pastMessages);

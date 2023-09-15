@@ -7,7 +7,7 @@ const MessageSchema = new Schema({
     receiverId: { type: Schema.Types.ObjectId, ref: 'users' },
     content: String,
     timestamp: Date,
-    read: Boolean,
+    read: { type: Boolean, default: false },
 });
 
 const MessageModel = mongoose.model('Messages', MessageSchema);
