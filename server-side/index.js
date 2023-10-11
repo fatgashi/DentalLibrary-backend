@@ -11,6 +11,10 @@ const cartRouter = require("./routes/cartRoute");
 const paymentRouter = require('./routes/paymentRoute');
 const conditionalJson = require('./middlewares/conditionJson');
 const socketIO = require('./socket');
+const costumerRoute = require('./routes/costumerRoute');
+const loanRoute = require('./routes/loanRoute');
+const visitorRouter = require('./routes/visitorsRoute');
+require('./cronJob/cronJob');
 
 const httpServer = require('http').createServer(app);
 const io = require('socket.io')(httpServer, {
@@ -38,6 +42,9 @@ app.use("/users", usersRouter);
 app.use("/books", booksRouter);
 app.use("/cart", cartRouter);
 app.use("/payment", paymentRouter);
+app.use('/visitor', visitorRouter);
+app.use('/costumers', costumerRoute);
+app.use('/loans', loanRoute);
 
 
 socketIO(io);

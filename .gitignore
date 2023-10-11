@@ -1,3 +1,9 @@
 node_modules
 .env
 uploads
+server-side/controllers/CostumerController.js
+server-side/controllers/LoanController.js
+server-side/models/costumerModel.js
+server-side/models/loanModel.js
+server-side/routes/costumerRoute.js
+server-side/routes/loanRoute.js

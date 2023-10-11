@@ -40,10 +40,10 @@ const CartController = {
 
     getBooksFromCart: async (req, res) => {
         try {
-            const userId = req.params.userId;
+            const user = req.user;
         
             // Find the user by _id
-            const user = await User.findById(userId).populate('cart');
+            await user.populate('cart');
         
             if (!user) {
               return res.status(404).json({ message: 'User not found! ' });
