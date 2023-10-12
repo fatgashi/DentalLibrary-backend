@@ -109,9 +109,14 @@ const usersController = {
       try {
           const user = req.user;
 
-          await user.populate('purchasedBooks');
+          await user.populate('purchasedBooks.book');
 
-          const purchasedBooks = user.purchasedBooks.reverse();
+          let books = user.purchasedBooks.map(books => {
+            return books.book
+          })
+
+
+          const purchasedBooks = books.reverse();
         
           res.json(purchasedBooks);
           

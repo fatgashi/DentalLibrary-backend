@@ -9,8 +9,10 @@ const protectUploads = (req, res, next) => {
         }
 
         req.user = user;
+
+        const purchasedBook = user.purchasedBooks.find(book => book.book.toString() === bookId);
         
-        if(user.purchasedBooks.includes(bookId)){
+        if(purchasedBook){
             next();
         } else {
             return res.status(403).json({ message: 'Access denied. Book not purchased.' });

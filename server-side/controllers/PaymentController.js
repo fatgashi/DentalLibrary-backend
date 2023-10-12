@@ -61,9 +61,16 @@ const PaymentController = {
 
         const user = await User.findById(userId);
 
-        const purchasedBooksIds = user.cart.map(book => book._id);
+        const purchaseDate = new Date();
+        purchaseDate.setHours(purchaseDate.getHours() + 2);
+        const purchasedBooks = user.cart.map(book => {
+          return {
+            book: book._id,
+            purchaseDate: purchaseDate
+          }
+        });
 
-        user.purchasedBooks.push(...purchasedBooksIds);
+        user.purchasedBooks.push(...purchasedBooks);
 
         user.cart = [];
 
