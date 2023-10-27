@@ -5,11 +5,12 @@ const path = require('path');
 const BooksController = {
     addBook: async (req,res) => {
         try {
-            const { title, description, price, author, photoUrl } = req.body;
+            const { title, description, originalPrice, price, author, photoUrl } = req.body;
 
             const newBook = new Book ({
                 title,
                 description,
+                originalPrice,
                 price,
                 author,
                 photoUrl
@@ -55,12 +56,14 @@ const BooksController = {
         
         try {
             const { id } = req.params;
-            const { title, description, price, author, photoUrl } = req.body;
+            const { title, description, originalPrice, price, author, photoUrl } = req.body;
             const book = await Book.findById(id);
 
             if(title) book.title = title;
 
             if(description) book.description = description;
+
+            if(originalPrice) book.originalPrice = originalPrice;
 
             if(price) book.price = price;
             

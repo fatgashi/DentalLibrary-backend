@@ -67,6 +67,7 @@ const StatisticsController = {
 
         try {
             const today = new Date();
+            today.setHours(today.getHours() + 2);
             const startDate = new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate());
             const endDate = new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() + 1);
             
