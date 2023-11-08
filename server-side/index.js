@@ -14,6 +14,7 @@ const socketIO = require('./socket');
 const costumerRoute = require('./routes/costumerRoute');
 const loanRoute = require('./routes/loanRoute');
 const statisticsRoute = require('./routes/statisticsRoute');
+const emailsRoute = require('./routes/emailsRoute');
 require('./cronJob/cronJob');
 
 const httpServer = require('http').createServer(app);
@@ -45,6 +46,7 @@ app.use("/payment", paymentRouter);
 app.use('/statistics', statisticsRoute);
 app.use('/costumers', costumerRoute);
 app.use('/loans', loanRoute);
+app.use('/email', emailsRoute);
 
 
 socketIO(io);

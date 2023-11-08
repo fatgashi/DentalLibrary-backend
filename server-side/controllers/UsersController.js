@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/usersModel');
 const passport = require('passport');
+const transporter = require('../config/transporter');
 
 const usersController = {
     register: async (req,res) => {
@@ -11,8 +12,15 @@ const usersController = {
             // Check if username is already taken
             const existingUser = await User.findOne({ username });
             if (existingUser) {
-              return res.status(400).json({ message: 'Username already taken' });
+              return res.status(400).json({ message: 'Username already taken!' });
             }
+
+            const existingEmail = await User.findOne({ email });
+            
+            if (existingEmail) {
+              return res.status(400).json({ message: 'Email already taken!' });
+            }
+
         
             // Generate salt and hash password
             const salt = await bcrypt.genSalt(10);
@@ -30,6 +38,43 @@ const usersController = {
         
             // Save the user to the database
             await newUser.save();
+
+            const mailOptions = {
+              from: 'fatjon.gashii04@gmail.com',
+              to: email,
+              subject: "Information on the E-book Purchase Process",
+              html: `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                  <style>
+                    /* Inline CSS styles for formatting */
+                    body {
+                      font-family: Arial, sans-serif;
+                    }
+                  </style>
+                </head>
+                <body>
+                  <p>Dear ${email},</p>
+                  <p>I hope this message finds you well. We appreciate your interest in purchasing e-books from our store, and we are here to guide you through the process. Here's a step-by-step overview of how to proceed:</p>
+                  <ol>
+                    <li><strong>Book Selection:</strong> Please reply to this email with the names of the e-books you wish to purchase. If you have specific editions or authors in mind, kindly provide those details as well.</li>
+                    <li><strong>Price Quotation:</strong> Once we receive your e-book selections, our team will promptly calculate the total cost. We will then send you an email with the detailed price breakdown.</li>
+                    <li><strong>Payment Information:</strong> In the email containing the price breakdown, you will find the account number to which you can transfer the payment. Kindly note that we accept payments via Bank Transfers.</li>
+                    <li><strong>Payment Confirmation:</strong> After making the payment, please reply to our email with a confirmation of the transaction, along with any reference or transaction ID provided by your payment method.</li>
+                    <li><strong>E-book Delivery:</strong> As soon as your payment is confirmed, we will process your order and send you the e-books in PDF format to the email address associated with your account.</li>
+                  </ol>
+                  <p><strong>Customer Support:</strong> If you have any questions or need assistance at any stage of the process, please do not hesitate to contact our customer support team at [customer support email or phone number].</p>
+                  <p>We are committed to making your e-book purchase experience as seamless as possible, and we look forward to assisting you every step of the way. Please feel free to ask if you have any questions or require further clarification on any part of the process.</p>
+                  <p>Thank you for choosing our bookstore, and we're excited to help you acquire the e-books you desire. We anticipate receiving your e-book selections and assisting you in making a successful purchase.</p>
+                  <p><strong>Best regards,</strong></p>
+                  <p>Dental Books</p>
+                </body>
+                </html>
+              `,
+            };
+
+            transporter.sendMail(mailOptions, null);
         
             res.status(201).json({ message: 'You have registered successfully!' });
         } 
