@@ -150,6 +150,48 @@ const usersController = {
       }
     },
 
+    subscription: async (req, res) => {
+      const { userId, numberOfMonths } = req.body;
+
+      try {
+
+        // Ensure userId and numberOfMonths are provided in the request body
+
+        if (!userId || !numberOfMonths) {
+            return res.status(400).json({ message: 'User ID and number of months are required.' });
+        }
+
+        const existingUser = await User.findById(userId);
+        if (!existingUser) {
+          return res.status(400).json({ message: 'Username not found!' });
+        }
+
+        // Calculate the start and end dates
+        const currentDate = new Date();
+        const startDate = currentDate;
+        const endDate = new Date(currentDate);
+        endDate.setMonth(endDate.getMonth() + numberOfMonths);
+
+        // Find the user in the database and update their subscription
+        const user = await User.findByIdAndUpdate(
+            userId,
+            {
+                $set: {
+                    'subscription.active': true,
+                    'subscription.startDate': startDate,
+                    'subscription.endDate': endDate,
+                },
+            },
+        );
+
+        await user.save();
+
+        return res.status(200).json({ message: 'Subscription updated successfully.' });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+    },
+
     getPurchasedBooks: async (req, res) => {
       try {
           const user = req.user;

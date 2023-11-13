@@ -20,9 +20,9 @@ const upload = multer ({
     //         callback(null, false);
     //     }
     // },
-    limits: {
-        fileSize: 1024 * 1024 * 100
-    }
+    // limits: {
+    //     fileSize: 1024 * 1024 * 100
+    // }
 })
 
 module.exports = upload;

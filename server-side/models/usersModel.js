@@ -48,6 +48,18 @@ const Users = new Schema ({
     date: {
         type: Date,
         default: Date.now,
+    },
+    subscription: {
+        active: {
+            type: Boolean,
+            default: false,
+        },
+        startDate: {
+            type: Date,
+        },
+        endDate: {
+            type: Date,
+        },
     }
 })
 

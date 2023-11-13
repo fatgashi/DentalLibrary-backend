@@ -56,13 +56,7 @@ const EmailDiscount = {
                 `,
               };
           
-              transporter.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                  console.log('Error sending email:', error);
-                } else {
-                  console.log('Email sent:', info.response);
-                }
-              });
+              transporter.sendMail(mailOptions, null);
           
               res.status(201).json({ message: 'Email saved and welcome email sent successfully' });
 
