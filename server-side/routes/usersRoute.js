@@ -11,6 +11,7 @@ usersRouter.post('/logout', usersController.logout);
 usersRouter.get('/hasTokenExpired', usersController.hasTokenExpired);
 usersRouter.get('/getPurchasedBooks', passport.authenticate('jwt', { session: false }), usersController.getPurchasedBooks);
 usersRouter.post('/subscribe', isAdmin, usersController.subscription);
+usersRouter.get('/getUser/:username', isAdmin, usersController.getUser);
 
   usersRouter.get(
     '/client/profile',
