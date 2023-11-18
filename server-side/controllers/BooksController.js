@@ -155,7 +155,7 @@ const BooksController = {
                 return res.status(404).json({ message: 'Book not found' });
             }
 
-            const fileName = book.pdfFiles.split('\\').pop();
+            const fileName = path.basename(book.pdfFiles);
             const filePath = path.join(__dirname, '..', '..', 'uploads', fileName);
 
             // Check if the file exists
