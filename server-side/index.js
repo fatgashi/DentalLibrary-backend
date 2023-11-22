@@ -9,6 +9,7 @@ const passport = require('passport');
 const usersRouter = require('./routes/usersRoute');
 const booksRouter = require('./routes/booksRoute');
 const session = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session);
 const cartRouter = require("./routes/cartRoute");
 const paymentRouter = require('./routes/paymentRoute');
 const conditionalJson = require('./middlewares/conditionJson');
@@ -19,21 +20,43 @@ const statisticsRoute = require('./routes/statisticsRoute');
 const emailsRoute = require('./routes/emailsRoute');
 require('./cronJob/cronJob');
 
-app.use(conditionalJson);
-app.use(cors());
 
+mongoose.connect(`${process.env.MONGO_URL}`, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+
+}).then(() => console.log("MongoDb database Connected ...")).catch((err) => console.log(err));
+
+
+// Create a MongoDBStore instance with the mongoose connection
+const store = new MongoDBStore({
+  uri: `${process.env.MONGO_URL}`,
+  databaseName: "dentalDatabase",
+  collection: 'sessions',
+});
+
+store.on('error', function (error) {
+  console.error(error);
+});
+
+// Express session middleware with the MongoDBStore
 app.use(
   session({
     secret: process.env.JWT_SECRET,
     resave: false,
     saveUninitialized: false,
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
+    },
+    store: store,
   })
 );
 
-
+app.use(cors());
 app.use(passport.initialize());
 require('./config/passport')(passport);
 app.use(passport.session());
+app.use(conditionalJson);
 app.use("/api/users", usersRouter);
 app.use("/api/books", booksRouter);
 app.use("/api/cart", cartRouter);
@@ -63,10 +86,5 @@ socketIO(io);
 
 const port = process.env.PORT;
 
-mongoose.connect(`${process.env.MONGO_URL}`, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-
-}).then(() => console.log("MongoDb database Connected ...")).catch((err) => console.log(err));
 
 httpServer.listen(port, () => console.log(`Up & Running on port ${port}`));
