@@ -4,7 +4,7 @@ const cors = require("cors");
 const app = express();
 const mongoose = require('mongoose');
 //const https = require('https');
-//const fs = require('fs');
+const fs = require('fs');
 const passport = require('passport');
 const usersRouter = require('./routes/usersRoute');
 const booksRouter = require('./routes/booksRoute');
@@ -42,7 +42,7 @@ store.on('error', function (error) {
 // Express session middleware with the MongoDBStore
 app.use(
   session({
-    secret: process.env.JWT_SECRET,
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -78,8 +78,9 @@ const httpServer = require('http').createServer(app);
 
 const io = require('socket.io')(httpServer, {
   cors: {
-    origin: "*",
+    origin: "https://oralmeds.co",
   }
+
 });
 
 socketIO(io);

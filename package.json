@@ -24,6 +24,7 @@
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "socket.io": "^4.7.2",
-    "stripe": "^13.2.0"
+    "stripe": "^13.2.0",
+    "zlib": "^1.0.5"
   }
 }

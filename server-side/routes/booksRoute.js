@@ -8,6 +8,7 @@ const { checkSubscriptionStatus } = require('../middlewares/subscribe');
 
 booksRouter.get('/getAllBooks', BooksController.getAllBooks);
 booksRouter.get('/getBook/:id', BooksController.getBook);
+booksRouter.get('/countBooks', BooksController.countBooks);
 booksRouter.post('/addBook', upload.single('pdfFiles'), isAdmin, BooksController.addBook);
 booksRouter.post('/updateBook/:id', isAdmin, BooksController.updateBook);
 booksRouter.get('/searchBook', BooksController.searchBook);

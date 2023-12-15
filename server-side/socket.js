@@ -3,7 +3,7 @@ const User = require('./models/usersModel');
 
 const socketIO = (io) => {
     io.on('connection', (socket) => {
-      
+
         socket.on('getPastMessages', async (userId) => {
           try {
             // Query the database to retrieve past messages
@@ -23,7 +23,7 @@ const socketIO = (io) => {
 
         socket.on('getAdminConversations', async () => {
           try {
-            const adminUserId = '64b93f1a2c51344e99712479'; // Replace 'admin' with the actual admin user's ObjectId
+            const adminUserId = '65565d1a1858939380268e53'; // Replace 'admin' with the actual admin user's ObjectId
       
             // Query the database to find unique users who have communicated with the admin
             const users = await Message.distinct('senderId', {
@@ -80,7 +80,7 @@ const socketIO = (io) => {
         socket.on('getAdminUserMessages', async (selectedUserId) => {
           try {
             // Query the database to retrieve messages exchanged between admin and the selected user
-            const adminUserId = '64b93f1a2c51344e99712479'; // Assuming you have an admin user or you can retrieve the admin's ID
+            const adminUserId = '65565d1a1858939380268e53'; // Assuming you have an admin user or you can retrieve the admin's ID
             const pastMessages = await Message.find({
               $or: [
                 { senderId: adminUserId, receiverId: selectedUserId },

@@ -10,6 +10,8 @@ const BookSchema = new Schema({
   author: { type: String, required: true },
   photoUrl: { type: String },
   date: { type: Date, default: Date.now },
+  category: { type: String, required: true},
+  isbn: {type: String},
   pdfFiles: {
     type: String
   }

@@ -16,7 +16,7 @@ const StatisticsController = {
             });
 
             if (existingRecord) {
-            return;  // If record exists, don't save again
+            return res.status(200).json({ message: 'Registerd' });  // If record exists, don't save again
             }
 
             const visitor = new Visitor({
